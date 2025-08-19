@@ -3,7 +3,6 @@ import { motion, useScroll, useTransform } from 'framer-motion';
 import { useRef } from 'react';
 import { ShieldCheck, Cpu, Crown } from 'lucide-react';
 import MotionWrap from '../shared/MotionWrap';
-import { cn } from '@/lib/utils';
 
 const hubData = [
   {
@@ -27,11 +26,11 @@ const hubData = [
 ];
 
 const TextContent = ({ title, subtitle, description, progress, range }: any) => {
-    const opacity = useTransform(progress, range, [0.3, 1, 0.3]);
-    const y = useTransform(progress, range, [30, 0, -30]);
+    const opacity = useTransform(progress, range, [0, 1, 1, 0]);
+    const y = useTransform(progress, range, [30, 0, 0, -30]);
 
     return (
-        <motion.div style={{ opacity, y }} className="space-y-4 h-full flex flex-col justify-center">
+        <motion.div style={{ opacity, y }} className="space-y-4 h-full flex flex-col justify-center absolute inset-0">
             <p className="font-headline text-accent text-lg">{subtitle}</p>
             <h3 className="font-headline text-3xl md:text-4xl text-foreground">{title}</h3>
             <p className="text-muted-foreground md:text-lg max-w-md">{description}</p>
@@ -50,7 +49,7 @@ const TriHubSection = () => {
   const headlineOpacity = useTransform(scrollYProgress, [0, 0.05, 0.95, 1], [0, 1, 1, 0]);
 
   // SVG and Hub animations
-  const dohaOpacity = useTransform(scrollYProgress, [0.05, 0.1, 0.9], [0, 1, 1]);
+  const dohaOpacity = useTransform(scrollYProgress, [0.05, 0.1, 0.9, 1], [0, 1, 1, 0]);
   const dubaiOpacity = useTransform(scrollYProgress, [0.35, 0.4], [0, 1]);
   const cairoOpacity = useTransform(scrollYProgress, [0.65, 0.7], [0, 1]);
 
@@ -61,11 +60,13 @@ const TriHubSection = () => {
     <MotionWrap ref={targetRef} className="h-[350vh]">
       <div className="sticky top-0 w-full h-screen overflow-hidden">
         
-        <motion.div style={{ opacity: headlineOpacity }} className="text-center absolute top-24 left-0 right-0 z-10 px-6">
-          <h2 className="font-headline text-3xl md:text-4xl lg:text-h2 text-foreground">
-            The Tri-Hub Model: Sovereign Foundation, Dual Execution
-          </h2>
-        </motion.div>
+        <div className="absolute top-24 left-0 right-0 z-10 px-6">
+            <motion.div style={{ opacity: headlineOpacity }} className="text-center">
+                <h2 className="font-headline text-3xl md:text-4xl lg:text-h2 text-foreground">
+                    The Tri-Hub Model: Sovereign Foundation, Dual Execution
+                </h2>
+            </motion.div>
+        </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2 w-full h-full items-center">
             {/* LEFT: SVG VISUAL */}
@@ -97,10 +98,10 @@ const TriHubSection = () => {
             </div>
 
             {/* RIGHT: TEXT CONTENT */}
-            <div className="relative w-full h-[50vh] lg:h-full px-6">
-                <TextContent {...hubData[0]} progress={scrollYProgress} range={[0.1, 0.3, 0.4]} />
-                <TextContent {...hubData[1]} progress={scrollYProgress} range={[0.4, 0.6, 0.7]} />
-                <TextContent {...hubData[2]} progress={scrollYProgress} range={[0.7, 0.9, 1.0]} />
+            <div className="relative w-full h-full px-6 pt-48 lg:pt-0">
+                <TextContent {...hubData[0]} progress={scrollYProgress} range={[0.1, 0.3, 0.4, 0.5]} />
+                <TextContent {...hubData[1]} progress={scrollYProgress} range={[0.4, 0.6, 0.7, 0.8]} />
+                <TextContent {...hubData[2]} progress={scrollYProgress} range={[0.7, 0.9, 1.0, 1.1]} />
             </div>
         </div>
 
