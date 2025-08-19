@@ -1,23 +1,27 @@
 'use client';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { motion } from 'framer-motion';
+import { useState } from 'react';
 import { ShieldCheck, Cpu, Crown } from 'lucide-react';
 import MotionWrap from '../shared/MotionWrap';
+import { cn } from '@/lib/utils';
 
 const hubData = [
   {
+    id: 'doha',
     icon: Crown,
     title: 'Doha (QIA)',
     subtitle: 'Sovereign Foundation & Capital',
     description: 'The institutional anchor providing the long-term, patient sovereign capital and strategic mandate. This is the source of the fund\'s stability and global network access.',
   },
   {
+    id: 'dubai',
     icon: ShieldCheck,
     title: 'Dubai (DIFC)',
     subtitle: 'Legal & Governance',
     description: 'A robust, internationally-aligned regulatory framework providing the tax efficiency and credibility needed to attract institutional capital. This hub acts as the regulatory shield.',
   },
   {
+    id: 'cairo',
     icon: Cpu,
     title: 'Cairo',
     subtitle: 'Operations & Investment',
@@ -25,87 +29,114 @@ const hubData = [
   },
 ];
 
-const TextContent = ({ title, subtitle, description, progress, range }: any) => {
-    const opacity = useTransform(progress, range, [0, 1, 1, 0]);
-    const y = useTransform(progress, range, [30, 0, 0, -30]);
+type HubId = 'doha' | 'dubai' | 'cairo';
+
+const SVGVisual = ({ activeHub }: { activeHub: HubId }) => {
+    const pathVariants = {
+        hidden: { pathLength: 0, opacity: 0 },
+        visible: { pathLength: 1, opacity: 1, transition: { duration: 1, ease: 'easeInOut' } },
+      };
 
     return (
-        <motion.div style={{ opacity, y }} className="space-y-4 h-full flex flex-col justify-center absolute inset-0">
-            <p className="font-headline text-accent text-lg">{subtitle}</p>
-            <h3 className="font-headline text-3xl md:text-4xl text-foreground">{title}</h3>
-            <p className="text-muted-foreground md:text-lg max-w-md">{description}</p>
-        </motion.div>
+        <div className="relative w-[300px] h-[400px] lg:w-[400px] lg:h-[500px]">
+            {/* Hubs */}
+            {hubData.map((hub, index) => (
+                 <motion.div
+                    key={hub.id}
+                    className={cn(
+                        "absolute text-center space-y-2 transition-opacity duration-500",
+                        hub.id === 'doha' && "top-0 left-1/2 -translate-x-1/2",
+                        hub.id === 'dubai' && "bottom-0 left-0",
+                        hub.id === 'cairo' && "bottom-0 right-0"
+                    )}
+                    animate={{ opacity: activeHub === hub.id ? 1 : 0.4 }}
+                    transition={{ duration: 0.5 }}
+                >
+                    <hub.icon className="w-12 h-12 text-primary mx-auto" />
+                    <p className="font-headline text-lg">{hub.title.split('(')[0]}</p>
+                 </motion.div>
+            ))}
+
+             {/* SVG Lines */}
+             <svg width="100%" height="100%" viewBox="0 0 400 500" className="absolute top-0 left-0 pointer-events-none">
+                 {/* Doha to Dubai */}
+                <motion.path 
+                    d="M 200 60 V 250 L 50 440"
+                    fill="none" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth="2"
+                    variants={pathVariants}
+                    animate={activeHub === 'dubai' || activeHub === 'cairo' ? 'visible' : 'hidden'}
+                />
+                 {/* Doha to Cairo */}
+                <motion.path 
+                    d="M 200 60 V 250 L 350 440"
+                    fill="none" 
+                    stroke="hsl(var(--primary))" 
+                    strokeWidth="2"
+                    variants={pathVariants}
+                    animate={activeHub === 'dubai' || activeHub === 'cairo' ? 'visible' : 'hidden'}
+                />
+                {/* Dubai to Cairo */}
+                <motion.path 
+                    d="M 70 460 H 330" 
+                    fill="none" 
+                    stroke="hsl(var(--accent))" 
+                    strokeWidth="1.5" 
+                    strokeDasharray="5 5"
+                    variants={pathVariants}
+                    animate={activeHub === 'cairo' ? 'visible' : 'hidden'}
+                 />
+            </svg>
+        </div>
     )
 }
 
+
 const TriHubSection = () => {
-  const targetRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    offset: ['start start', 'end end'],
-  });
-
-  // Headline animation
-  const headlineOpacity = useTransform(scrollYProgress, [0, 0.05, 0.95, 1], [0, 1, 1, 0]);
-
-  // SVG and Hub animations
-  const dohaOpacity = useTransform(scrollYProgress, [0.05, 0.1, 0.9, 1], [0, 1, 1, 0]);
-  const dubaiOpacity = useTransform(scrollYProgress, [0.35, 0.4], [0, 1]);
-  const cairoOpacity = useTransform(scrollYProgress, [0.65, 0.7], [0, 1]);
-
-  const primaryPathLength = useTransform(scrollYProgress, [0.15, 0.35], [0, 1]);
-  const secondaryPathLength = useTransform(scrollYProgress, [0.45, 0.65], [0, 1]);
+  const [activeHub, setActiveHub] = useState<HubId>('doha');
 
   return (
-    <MotionWrap ref={targetRef} className="h-[350vh]">
-      <div className="sticky top-0 w-full h-screen overflow-hidden">
+    <MotionWrap className="flex flex-col">
+        <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-16 md:mb-24"
+        >
+            <h2 className="font-headline text-3xl md:text-4xl lg:text-h2 text-foreground">
+                The Tri-Hub Model: Sovereign Foundation, Dual Execution
+            </h2>
+        </motion.div>
         
-        <div className="absolute top-24 left-0 right-0 z-10 px-6">
-            <motion.div style={{ opacity: headlineOpacity }} className="text-center">
-                <h2 className="font-headline text-3xl md:text-4xl lg:text-h2 text-foreground">
-                    The Tri-Hub Model: Sovereign Foundation, Dual Execution
-                </h2>
-            </motion.div>
-        </div>
-        
-        <div className="grid grid-cols-1 lg:grid-cols-2 w-full h-full items-center">
-            {/* LEFT: SVG VISUAL */}
-            <div className="relative w-full h-full flex items-center justify-center">
-                <div className="relative w-[500px] h-[400px]">
-                    {/* HUBS */}
-                    <motion.div style={{ opacity: dohaOpacity }} className="absolute top-0 left-1/2 -translate-x-1/2 text-center space-y-2">
-                         <Crown className="w-12 h-12 text-primary mx-auto" />
-                         <p className="font-headline text-lg">Doha</p>
-                    </motion.div>
-                    <motion.div style={{ opacity: dubaiOpacity }} className="absolute bottom-0 left-0 text-center space-y-2">
-                         <ShieldCheck className="w-12 h-12 text-primary mx-auto" />
-                         <p className="font-headline text-lg">Dubai</p>
-                    </motion.div>
-                    <motion.div style={{ opacity: cairoOpacity }} className="absolute bottom-0 right-0 text-center space-y-2">
-                         <Cpu className="w-12 h-12 text-primary mx-auto" />
-                         <p className="font-headline text-lg">Cairo</p>
-                    </motion.div>
-                    
-                    {/* SVG LINES */}
-                    <svg width="500" height="400" viewBox="0 0 500 400" className="absolute top-0 left-0 w-full h-full pointer-events-none">
-                        {/* Primary Lines */}
-                        <motion.path d="M 250 60 V 150 L 60 340" fill="none" stroke="hsl(var(--primary))" strokeWidth="2" style={{ pathLength: primaryPathLength }}/>
-                        <motion.path d="M 250 60 V 150 L 440 340" fill="none" stroke="hsl(var(--primary))" strokeWidth="2" style={{ pathLength: primaryPathLength }}/>
-                        {/* Secondary Line */}
-                        <motion.path d="M 80 360 H 420" fill="none" stroke="hsl(var(--accent))" strokeWidth="1.5" strokeDasharray="5 5" style={{ pathLength: secondaryPathLength }}/>
-                    </svg>
-                </div>
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
+            {/* LEFT: Sticky Visual */}
+            <div className="hidden lg:flex items-start justify-center sticky top-24">
+                <SVGVisual activeHub={activeHub} />
             </div>
 
-            {/* RIGHT: TEXT CONTENT */}
-            <div className="relative w-full h-full px-6 pt-48 lg:pt-0">
-                <TextContent {...hubData[0]} progress={scrollYProgress} range={[0.1, 0.3, 0.4, 0.5]} />
-                <TextContent {...hubData[1]} progress={scrollYProgress} range={[0.4, 0.6, 0.7, 0.8]} />
-                <TextContent {...hubData[2]} progress={scrollYProgress} range={[0.7, 0.9, 1.0, 1.1]} />
+             {/* Mobile: Visual on top */}
+             <div className="flex lg:hidden items-start justify-center mb-12">
+                <SVGVisual activeHub={activeHub} />
+            </div>
+
+            {/* RIGHT: Scrolling Text Content */}
+            <div className="flex flex-col gap-32 md:gap-48 lg:gap-64">
+                {hubData.map((hub) => (
+                    <motion.div
+                        key={hub.id}
+                        className="space-y-4"
+                        onViewportEnter={() => setActiveHub(hub.id as HubId)}
+                        viewport={{ amount: 0.5, margin: "-50% 0px -50% 0px" }}
+                    >
+                        <p className="font-headline text-accent text-lg">{hub.subtitle}</p>
+                        <h3 className="font-headline text-3xl md:text-4xl text-foreground">{hub.title}</h3>
+                        <p className="text-muted-foreground md:text-lg max-w-md">{hub.description}</p>
+                    </motion.div>
+                ))}
             </div>
         </div>
-
-      </div>
     </MotionWrap>
   );
 };
