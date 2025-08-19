@@ -25,12 +25,12 @@ const itemVariants = {
 };
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
-  <motion.span 
+  <motion.span
     initial={{ backgroundSize: '0% 100%' }}
     whileInView={{ backgroundSize: '100% 100%' }}
     transition={{ duration: 0.5, ease: 'easeOut', delay: 0.3 }}
     viewport={{ once: true, amount: 0.8 }}
-    className="text-primary font-bold bg-no-repeat bg-bottom bg-gradient-to-r from-primary/30 to-primary/30"
+    className="text-accent font-bold bg-no-repeat bg-bottom bg-gradient-to-r from-accent/30 to-accent/30"
   >
     {children}
   </motion.span>

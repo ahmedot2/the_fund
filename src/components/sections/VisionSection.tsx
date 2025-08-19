@@ -43,7 +43,7 @@ const VisionSection = () => {
           A Strategic Partnership to Drive Economic Diversification and Innovation.
         </motion.h2>
       </div>
-      <motion.div 
+      <motion.div
         className="max-w-4xl mx-auto"
         variants={{
           hidden: {},
@@ -54,7 +54,7 @@ const VisionSection = () => {
           {visions.map((vision, index) => (
             <motion.div key={index} variants={cardVariants}>
               <AccordionItem value={`item-${index}`} className="border-b-0">
-                <AccordionTrigger className="text-left font-headline text-xl md:text-2xl bg-muted/30 hover:bg-muted/60 p-6 rounded-lg data-[state=open]:bg-primary/10 data-[state=open]:text-primary transition-all duration-300">
+                <AccordionTrigger className="text-left font-headline text-xl md:text-2xl bg-muted/30 hover:bg-muted/60 p-6 rounded-lg data-[state=open]:bg-accent/10 data-[state=open]:text-accent transition-all duration-300">
                   {vision.title}
                 </AccordionTrigger>
                 <AccordionContent className="p-6 text-muted-foreground text-base leading-relaxed bg-muted/20 rounded-b-lg">
