@@ -1,6 +1,5 @@
 'use client';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import { useRef } from 'react';
+import { motion } from 'framer-motion';
 import MotionWrap from '../shared/MotionWrap';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 
@@ -58,70 +57,77 @@ const assetClasses = [
   },
 ];
 
-const AssetFeature = ({ title, data, progress, range }: any) => {
-  const opacity = useTransform(progress, range, [0, 1, 1, 0]);
-  const y = useTransform(progress, range, [30, 0, 0, -30]);
-
-  return (
-    <motion.div style={{ opacity, y }} className="absolute inset-0">
-      <div className="space-y-8">
-        <h3 className="font-headline text-4xl text-foreground">{title}</h3>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {data.map((item: any, index: number) => (
-            <motion.div
-              key={index}
-              custom={index}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 + index * 0.1, type: 'spring', stiffness: 100 }}
-              whileHover={{ scale: 1.03, y: -5, transition: { type: 'spring', stiffness: 300 } }}
-            >
-              <Card className="h-full bg-background/50 border-transparent hover:border-primary/30 shadow-md transition-all duration-300">
-                <CardHeader>
-                  <CardTitle className="text-lg font-body font-semibold">{item.headline}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{item.body}</p>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  );
+const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { staggerChildren: 0.2, delayChildren: 0.2 },
+    },
+  };
+  
+const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+        opacity: 1,
+        y: 0,
+        transition: { type: 'spring', stiffness: 100, damping: 13 },
+    },
 };
 
+const cardVariants = {
+    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    visible: { 
+      opacity: 1, 
+      y: 0, 
+      scale: 1,
+      transition: { type: 'spring', stiffness: 100, damping: 20, duration: 0.8 } 
+    },
+  };
+
 const AssetClassDeepDive = () => {
-  const targetRef = useRef<HTMLDivElement | null>(null);
-  const { scrollYProgress } = useScroll({
-    target: targetRef,
-    offset: ['start start', 'end end'],
-  });
-
-  const sectionOpacity = useTransform(scrollYProgress, [0, 0.05, 0.95, 1], [0, 1, 1, 0]);
-
   return (
-    <MotionWrap ref={targetRef} className="h-[300vh] bg-muted/30">
-      <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-        <motion.div style={{ opacity: sectionOpacity }} className="grid grid-cols-1 lg:grid-cols-3 gap-16 w-full">
-          {/* Left: Sticky Headline */}
-          <div className="lg:col-span-1">
-            <div className="sticky top-1/2 -translate-y-1/2">
-              <h2 className="font-headline text-3xl md:text-4xl lg:text-h3 text-foreground">
+    <MotionWrap className="bg-muted/30 flex flex-col gap-24">
+       <motion.div variants={itemVariants} className="text-center">
+            <h2 className="font-headline text-3xl md:text-4xl lg:text-h2 text-foreground">
                 A Deep Dive into the Frontier Technologies
-              </h2>
-            </div>
-          </div>
+            </h2>
+      </motion.div>
 
-          {/* Right: Scrolling Content */}
-          <div className="lg:col-span-2 relative h-[300px]">
-            <AssetFeature {...assetClasses[0]} progress={scrollYProgress} range={[0.1, 0.3, 0.4, 0.5]} />
-            <AssetFeature {...assetClasses[1]} progress={scrollYProgress} range={[0.4, 0.6, 0.7, 0.8]} />
-            <AssetFeature {...assetClasses[2]} progress={scrollYProgress} range={[0.7, 0.9, 1.0, 1.1]} />
-          </div>
+      {assetClasses.map((asset, index) => (
+        <motion.div
+            key={index}
+            className="space-y-8"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={containerVariants}
+        >
+          <motion.h3 variants={itemVariants} className="font-headline text-4xl text-foreground text-center">
+              {asset.title}
+          </motion.h3>
+          <motion.div 
+            variants={containerVariants}
+            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+          >
+            {asset.data.map((item: any, itemIndex: number) => (
+              <motion.div
+                key={itemIndex}
+                variants={cardVariants}
+                whileHover={{ scale: 1.03, y: -5, transition: { type: 'spring', stiffness: 300 } }}
+              >
+                <Card className="h-full bg-background/50 border-transparent hover:border-primary/30 shadow-md transition-all duration-300">
+                  <CardHeader>
+                    <CardTitle className="text-lg font-body font-semibold">{item.headline}</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground text-sm leading-relaxed">{item.body}</p>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
         </motion.div>
-      </div>
+      ))}
     </MotionWrap>
   );
 };
