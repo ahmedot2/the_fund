@@ -1,5 +1,6 @@
 import HeroSection from '@/components/sections/HeroSection';
 import ImperativeSection from '@/components/sections/ImperativeSection';
+import AssetClassDeepDive from '@/components/sections/AssetClassDeepDive';
 import SolutionSection from '@/components/sections/SolutionSection';
 import TriHubSection from '@/components/sections/TriHubSection';
 import MandateSection from '@/components/sections/MandateSection';
@@ -13,6 +14,7 @@ export default function Home() {
     <main className="flex flex-col items-center justify-center overflow-x-hidden">
       <HeroSection />
       <ImperativeSection />
+      <AssetClassDeepDive />
       <SolutionSection />
       <TriHubSection />
       <MandateSection />
