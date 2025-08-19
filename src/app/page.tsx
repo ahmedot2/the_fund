@@ -1,7 +1,7 @@
 import HeroSection from '@/components/sections/HeroSection';
 import ImperativeSection from '@/components/sections/ImperativeSection';
 import SolutionSection from '@/components/sections/SolutionSection';
-import DualHubSection from '@/components/sections/DualHubSection';
+import TriHubSection from '@/components/sections/TriHubSection';
 import MandateSection from '@/components/sections/MandateSection';
 import FinancialsSection from '@/components/sections/FinancialsSection';
 import AllocationSection from '@/components/sections/AllocationSection';
@@ -14,7 +14,7 @@ export default function Home() {
       <HeroSection />
       <ImperativeSection />
       <SolutionSection />
-      <DualHubSection />
+      <TriHubSection />
       <MandateSection />
       <FinancialsSection />
       <AllocationSection />
