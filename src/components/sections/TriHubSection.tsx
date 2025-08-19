@@ -11,7 +11,7 @@ const hubData = [
     icon: Crown,
     title: 'Doha (QIA)',
     subtitle: 'Sovereign Foundation & Capital',
-    description: 'The institutional anchor providing the long-term, patient sovereign capital and strategic mandate. This is the source of the fund\'s stability and global network access.',
+    description: "The institutional anchor providing the long-term, patient sovereign capital and strategic mandate. This is the source of the fund's stability and global network access.",
   },
   {
     id: 'dubai',
@@ -38,13 +38,13 @@ const SVGVisual = ({ activeHub }: { activeHub: HubId }) => {
       };
 
     return (
-        <div className="relative w-[300px] h-[400px] lg:w-[400px] lg:h-[500px]">
+        <div className="relative w-full max-w-sm h-[400px] lg:w-[400px] lg:h-[500px] mx-auto">
             {/* Hubs */}
-            {hubData.map((hub, index) => (
+            {hubData.map((hub) => (
                  <motion.div
                     key={hub.id}
                     className={cn(
-                        "absolute text-center space-y-2 transition-opacity duration-500",
+                        "absolute flex items-center gap-4 transition-opacity duration-500",
                         hub.id === 'doha' && "top-0 left-1/2 -translate-x-1/2",
                         hub.id === 'dubai' && "bottom-0 left-0",
                         hub.id === 'cairo' && "bottom-0 right-0"
@@ -52,7 +52,7 @@ const SVGVisual = ({ activeHub }: { activeHub: HubId }) => {
                     animate={{ opacity: activeHub === hub.id ? 1 : 0.4 }}
                     transition={{ duration: 0.5 }}
                 >
-                    <hub.icon className="w-12 h-12 text-primary mx-auto" />
+                    <hub.icon className="w-10 h-10 text-primary flex-shrink-0" />
                     <p className="font-headline text-lg">{hub.title.split('(')[0]}</p>
                  </motion.div>
             ))}
@@ -61,7 +61,7 @@ const SVGVisual = ({ activeHub }: { activeHub: HubId }) => {
              <svg width="100%" height="100%" viewBox="0 0 400 500" className="absolute top-0 left-0 pointer-events-none">
                  {/* Doha to Dubai */}
                 <motion.path 
-                    d="M 200 60 V 250 L 50 440"
+                    d="M 200 50 V 250 L 80 430"
                     fill="none" 
                     stroke="hsl(var(--primary))" 
                     strokeWidth="2"
@@ -70,7 +70,7 @@ const SVGVisual = ({ activeHub }: { activeHub: HubId }) => {
                 />
                  {/* Doha to Cairo */}
                 <motion.path 
-                    d="M 200 60 V 250 L 350 440"
+                    d="M 200 50 V 250 L 320 430"
                     fill="none" 
                     stroke="hsl(var(--primary))" 
                     strokeWidth="2"
@@ -79,7 +79,7 @@ const SVGVisual = ({ activeHub }: { activeHub: HubId }) => {
                 />
                 {/* Dubai to Cairo */}
                 <motion.path 
-                    d="M 70 460 H 330" 
+                    d="M 100 450 H 300" 
                     fill="none" 
                     stroke="hsl(var(--accent))" 
                     strokeWidth="1.5" 
@@ -112,7 +112,7 @@ const TriHubSection = () => {
         
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-start">
             {/* LEFT: Sticky Visual */}
-            <div className="hidden lg:flex items-start justify-center sticky top-24">
+            <div className="hidden lg:flex items-start justify-center sticky top-24 h-screen">
                 <SVGVisual activeHub={activeHub} />
             </div>
 
