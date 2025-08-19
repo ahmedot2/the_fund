@@ -87,7 +87,13 @@ const cardVariants = {
 const AssetClassDeepDive = () => {
   return (
     <MotionWrap className="bg-muted/30 flex flex-col gap-24">
-       <motion.div variants={itemVariants} className="text-center">
+       <motion.div 
+         variants={itemVariants} 
+         initial="hidden"
+         whileInView="visible"
+         viewport={{ once: true, amount: 0.5 }}
+         className="text-center"
+        >
             <h2 className="font-headline text-3xl md:text-4xl lg:text-h2 text-foreground">
                 A Deep Dive into the Frontier Technologies
             </h2>
