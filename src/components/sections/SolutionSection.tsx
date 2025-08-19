@@ -45,11 +45,13 @@ const SolutionSection = () => {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {pillars.map((pillar, index) => (
-          <motion.div key={index} variants={cardVariants}>
+          <motion.div
+            key={index}
+            variants={cardVariants}
+            whileHover={{ scale: 1.03, y: -5 }}
+            transition={{ type: 'spring', stiffness: 300 }}
+          >
             <Card
-              as={motion.div}
-              whileHover={{ scale: 1.03, y: -5 }}
-              transition={{ type: 'spring', stiffness: 300 }}
               className="h-full bg-background/50 border-2 border-transparent hover:border-primary/50 transition-colors duration-300 shadow-lg"
             >
               <CardHeader className="items-center text-center">
