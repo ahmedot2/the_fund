@@ -39,29 +39,46 @@ const SVGVisual = ({ activeHub }: { activeHub: HubId }) => {
 
     return (
         <div className="relative w-full max-w-sm h-[400px] lg:w-[400px] lg:h-[500px] mx-auto">
-            {/* Hubs */}
-            {hubData.map((hub) => (
-                 <motion.div
-                    key={hub.id}
-                    className={cn(
-                        "absolute flex items-center gap-4 transition-opacity duration-500",
-                        hub.id === 'doha' && "top-0 left-1/2 -translate-x-1/2",
-                        hub.id === 'dubai' && "bottom-0 left-0",
-                        hub.id === 'cairo' && "bottom-0 right-0"
-                    )}
-                    animate={{ opacity: activeHub === hub.id ? 1 : 0.4 }}
-                    transition={{ duration: 0.5 }}
-                >
-                    <hub.icon className="w-10 h-10 text-primary flex-shrink-0" />
-                    <p className="font-headline text-lg">{hub.title.split('(')[0]}</p>
-                 </motion.div>
-            ))}
+            {/* Hubs - Positioned with translate for precision */}
+            <motion.div
+                className="absolute"
+                style={{ top: '2.5rem', left: '50%', translateX: '-50%' }}
+                animate={{ opacity: activeHub === 'doha' ? 1 : 0.4 }}
+                transition={{ duration: 0.5 }}
+            >
+                <div className="flex items-center gap-4">
+                    <Crown className="w-10 h-10 text-primary flex-shrink-0" />
+                    <p className="font-headline text-lg">Doha</p>
+                </div>
+            </motion.div>
+            <motion.div
+                className="absolute"
+                style={{ bottom: '2.5rem', left: '0' }}
+                animate={{ opacity: activeHub === 'dubai' ? 1 : 0.4 }}
+                transition={{ duration: 0.5 }}
+            >
+                <div className="flex items-center gap-4">
+                    <ShieldCheck className="w-10 h-10 text-primary flex-shrink-0" />
+                    <p className="font-headline text-lg">Dubai</p>
+                </div>
+            </motion.div>
+            <motion.div
+                className="absolute"
+                 style={{ bottom: '2.5rem', right: '0' }}
+                animate={{ opacity: activeHub === 'cairo' ? 1 : 0.4 }}
+                transition={{ duration: 0.5 }}
+            >
+                <div className="flex items-center gap-4">
+                     <Cpu className="w-10 h-10 text-primary flex-shrink-0" />
+                    <p className="font-headline text-lg">Cairo</p>
+                </div>
+            </motion.div>
 
              {/* SVG Lines */}
              <svg width="100%" height="100%" viewBox="0 0 400 500" className="absolute top-0 left-0 pointer-events-none">
                  {/* Doha to Dubai */}
                 <motion.path 
-                    d="M 200 50 V 250 L 80 430"
+                    d="M 200 80 V 250 L 50 430"
                     fill="none" 
                     stroke="hsl(var(--primary))" 
                     strokeWidth="2"
@@ -70,7 +87,7 @@ const SVGVisual = ({ activeHub }: { activeHub: HubId }) => {
                 />
                  {/* Doha to Cairo */}
                 <motion.path 
-                    d="M 200 50 V 250 L 320 430"
+                    d="M 200 80 V 250 L 350 430"
                     fill="none" 
                     stroke="hsl(var(--primary))" 
                     strokeWidth="2"
@@ -79,7 +96,7 @@ const SVGVisual = ({ activeHub }: { activeHub: HubId }) => {
                 />
                 {/* Dubai to Cairo */}
                 <motion.path 
-                    d="M 100 450 H 300" 
+                    d="M 70 450 H 330" 
                     fill="none" 
                     stroke="hsl(var(--accent))" 
                     strokeWidth="1.5" 
