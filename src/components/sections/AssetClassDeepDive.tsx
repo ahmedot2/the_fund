@@ -42,6 +42,7 @@ const assetClasses = [
   },
   {
     title: 'Cryptocurrency / Blockchain',
+    video: '/crypto-background.mp4',
     data: [
       {
         headline: 'Market Size & Growth',
