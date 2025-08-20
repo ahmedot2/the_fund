@@ -24,6 +24,7 @@ const assetClasses = [
   },
   {
     title: 'Quantum Computing',
+    video: '/quantum-background.mp4',
     data: [
       {
         headline: 'Market Size & Growth',
