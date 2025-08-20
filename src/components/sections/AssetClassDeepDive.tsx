@@ -6,6 +6,7 @@ import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card';
 const assetClasses = [
   {
     title: 'Artificial Intelligence',
+    video: '/ai-background.mp4',
     data: [
       {
         headline: 'Market Size & Growth',
@@ -95,38 +96,56 @@ const AssetClassDeepDive = () => {
             {assetClasses.map((asset, index) => (
                 <motion.div 
                     key={index}
+                    className="relative rounded-xl overflow-hidden"
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
                     viewport={{ once: true, amount: 0.2 }}
                 >
-                    <motion.h3 
-                        className="font-headline text-4xl text-foreground mb-12 text-center"
-                        variants={cardVariants}
-                    >
-                        {asset.title}
-                    </motion.h3>
-                    <motion.div 
-                        className="grid grid-cols-1 md:grid-cols-3 gap-6"
-                        variants={containerVariants}
-                    >
-                        {asset.data.map((item, itemIndex) => (
-                        <motion.div
-                            key={itemIndex}
+                    {asset.video && (
+                        <>
+                            <div className="absolute inset-0 z-0">
+                                <video
+                                    src={asset.video}
+                                    autoPlay
+                                    muted
+                                    loop
+                                    playsInline
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                            <div className="absolute inset-0 bg-black/50 z-[1]"></div>
+                        </>
+                    )}
+                    <div className="relative z-[2] p-8 md:p-12">
+                        <motion.h3 
+                            className={`font-headline text-4xl mb-12 text-center ${asset.video ? 'text-white' : 'text-foreground'}`}
                             variants={cardVariants}
-                            whileHover={{ scale: 1.03, y: -5, transition: { type: 'spring', stiffness: 300 } }}
                         >
-                            <Card className="h-full bg-background/50 border-transparent hover:border-primary/30 shadow-md transition-all duration-300">
-                            <CardHeader>
-                                <CardTitle className="text-lg font-body font-semibold">{item.headline}</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground text-sm leading-relaxed">{item.body}</p>
-                            </CardContent>
-                            </Card>
+                            {asset.title}
+                        </motion.h3>
+                        <motion.div 
+                            className="grid grid-cols-1 md:grid-cols-3 gap-6"
+                            variants={containerVariants}
+                        >
+                            {asset.data.map((item, itemIndex) => (
+                            <motion.div
+                                key={itemIndex}
+                                variants={cardVariants}
+                                whileHover={{ scale: 1.03, y: -5, transition: { type: 'spring', stiffness: 300 } }}
+                            >
+                                <Card className={`h-full border-transparent hover:border-primary/30 shadow-md transition-all duration-300 ${asset.video ? 'bg-background/10 text-white border-white/20 hover:border-white/50' : 'bg-background/50'}`}>
+                                <CardHeader>
+                                    <CardTitle className={`text-lg font-body font-semibold ${asset.video ? 'text-white' : ''}`}>{item.headline}</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <p className={`${asset.video ? 'text-white/80' : 'text-muted-foreground'} text-sm leading-relaxed`}>{item.body}</p>
+                                </CardContent>
+                                </Card>
+                            </motion.div>
+                            ))}
                         </motion.div>
-                        ))}
-                    </motion.div>
+                    </div>
                 </motion.div>
             ))}
         </div>
