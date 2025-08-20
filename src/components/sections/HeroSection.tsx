@@ -22,6 +22,18 @@ const itemVariants = {
 const HeroSection = () => {
   return (
     <section className="relative flex h-screen min-h-[700px] w-full flex-col items-center justify-center overflow-hidden p-6">
+      <div className="absolute top-0 left-0 w-full h-full z-[-2]">
+        <video
+          src="/hero-background.mp4"
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="w-full h-full object-cover"
+        />
+      </div>
+      <div className="absolute top-0 left-0 w-full h-full bg-black/40 z-[-1]"></div>
+      
       <motion.div
         className="grid place-items-center text-center"
         variants={containerVariants}
@@ -29,7 +41,7 @@ const HeroSection = () => {
         animate="visible"
       >
         <motion.h1
-          className="font-headline font-black text-6xl md:text-8xl lg:text-h1 text-foreground"
+          className="font-headline font-black text-6xl md:text-8xl lg:text-h1 text-white"
           variants={{
             hidden: { opacity: 0 },
             visible: {
@@ -57,18 +69,18 @@ const HeroSection = () => {
         </motion.h1>
 
         <motion.h2
-          className="mt-6 max-w-3xl font-body text-xl md:text-2xl text-foreground"
+          className="mt-6 max-w-3xl font-body text-xl md:text-2xl text-white/90"
           variants={itemVariants}
         >
           A Global, Multi-Strategy Vehicle to Secure Future Alpha in Frontier Technologies
         </motion.h2>
 
-        <motion.p className="mt-4 text-base text-muted-foreground" variants={itemVariants}>
+        <motion.p className="mt-4 text-base text-white/70" variants={itemVariants}>
           A Strategic Proposal to the Qatar Investment Authority
         </motion.p>
       </motion.div>
       <motion.div
-        className="absolute bottom-6 w-full text-center text-sm text-muted-foreground"
+        className="absolute bottom-6 w-full text-center text-sm text-white/70"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2, duration: 1 }}
