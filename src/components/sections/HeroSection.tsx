@@ -95,7 +95,13 @@ const HeroSection = () => {
         animate={{ opacity: 1 }}
         transition={{ delay: 2, duration: 1 }}
       >
-        <p>Presented by H.E. Sheikh Jabr Bin Jasim Bin Thani Al Thani | August 2025</p>
+        <p>
+          Presented by{' '}
+          <span className="text-primary font-semibold">
+            H.E. Sheikh Jabr Bin Jasim Bin Thani Al Thani
+          </span>{' '}
+          | August 2025
+        </p>
       </motion.div>
       <ScrollIndicator text="Discover the Proposal" />
     </section>
