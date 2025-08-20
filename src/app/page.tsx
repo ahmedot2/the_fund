@@ -7,6 +7,7 @@ import MandateSection from '@/components/sections/MandateSection';
 import FinancialsSection from '@/components/sections/FinancialsSection';
 import AllocationSection from '@/components/sections/AllocationSection';
 import VisionSection from '@/components/sections/VisionSection';
+import PitchSection from '@/components/sections/PitchSection';
 import ConclusionSection from '@/components/sections/ConclusionSection';
 
 export default function Home() {
@@ -21,6 +22,7 @@ export default function Home() {
       <FinancialsSection />
       <AllocationSection />
       <VisionSection />
+      <PitchSection />
       <ConclusionSection />
     </main>
   );
