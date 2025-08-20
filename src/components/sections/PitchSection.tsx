@@ -7,40 +7,77 @@ import { cn } from '@/lib/utils';
 
 const PitchSection = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
   const [isControlsVisible, setIsControlsVisible] = useState(true);
+  const [isScrubbing, setIsScrubbing] = useState(false);
 
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
 
     const handleTimeUpdate = () => {
-      setProgress((video.currentTime / video.duration) * 100);
-      setCurrentTime(video.currentTime);
+      if (!isScrubbing) {
+        setProgress((video.currentTime / video.duration) * 100);
+        setCurrentTime(video.currentTime);
+      }
     };
     
     const handleDurationChange = () => {
-      setDuration(video.duration);
+      if (!isNaN(video.duration)) {
+        setDuration(video.duration);
+      }
     }
 
     video.addEventListener('timeupdate', handleTimeUpdate);
     video.addEventListener('durationchange', handleDurationChange);
+    video.addEventListener('loadedmetadata', handleDurationChange);
     
     return () => {
       video.removeEventListener('timeupdate', handleTimeUpdate);
       video.removeEventListener('durationchange', handleDurationChange);
+      video.removeEventListener('loadedmetadata', handleDurationChange);
     };
-  }, []);
+  }, [isScrubbing]);
+  
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+        if (isScrubbing && videoRef.current && progressBarRef.current) {
+            const rect = progressBarRef.current.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const width = rect.width;
+            const newTime = Math.max(0, Math.min(1, x / width)) * duration;
+            videoRef.current.currentTime = newTime;
+            setProgress((newTime / duration) * 100);
+            setCurrentTime(newTime);
+        }
+    };
+
+    const handleMouseUp = () => {
+        if (isScrubbing) {
+            setIsScrubbing(false);
+        }
+    };
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', handleMouseUp);
+    };
+}, [isScrubbing, duration]);
+
 
   const togglePlayPause = () => {
     const video = videoRef.current;
     if (video) {
       if (video.paused) {
-        video.play();
+        video.play().catch(e => console.error("Play error", e));
         setIsPlaying(true);
       } else {
         video.pause();
@@ -57,19 +94,26 @@ const PitchSection = () => {
     }
   };
 
+  const handleProgressMouseDown = () => {
+    setIsScrubbing(true);
+  };
+  
   const handleProgressClick = (e: React.MouseEvent<HTMLDivElement>) => {
     const video = videoRef.current;
-    if (video) {
-        const rect = e.currentTarget.getBoundingClientRect();
+    const progressBar = progressBarRef.current;
+    if (video && progressBar) {
+        const rect = progressBar.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const width = rect.width;
         const newTime = (x / width) * duration;
         video.currentTime = newTime;
         setProgress((newTime / duration) * 100);
+        setCurrentTime(newTime);
     }
   };
 
   const formatTime = (timeInSeconds: number) => {
+    if (isNaN(timeInSeconds) || timeInSeconds < 0) return '0:00';
     const minutes = Math.floor(timeInSeconds / 60);
     const seconds = Math.floor(timeInSeconds % 60);
     return `${minutes}:${seconds.toString().padStart(2, '0')}`;
@@ -95,7 +139,7 @@ const PitchSection = () => {
         onMouseEnter={() => setIsControlsVisible(true)}
         onMouseLeave={() => { if (isPlaying) setIsControlsVisible(false) }}
       >
-          <div className="relative w-full h-[60vh] md:h-screen flex items-center justify-center group">
+          <div className="relative w-full h-[60vh] md:h-screen flex items-center justify-center group rounded-xl overflow-hidden">
               <video
                   ref={videoRef}
                   src="/pitch-video.mp4"
@@ -110,9 +154,14 @@ const PitchSection = () => {
                 onClick={togglePlayPause}
               >
                 {!isPlaying && (
-                    <button className="bg-primary/80 text-primary-foreground rounded-full p-4 hover:bg-primary transition-colors">
-                        <Play className="w-12 h-12" />
-                    </button>
+                    <motion.button 
+                      className="bg-primary/80 text-primary-foreground rounded-full p-4 hover:bg-primary transition-colors focus:outline-none"
+                      initial={{ scale: 0.8, opacity: 0 }}
+                      animate={{ scale: 1, opacity: 1 }}
+                      exit={{ scale: 0.8, opacity: 0 }}
+                    >
+                        <Play className="w-12 h-12 ml-1" />
+                    </motion.button>
                 )}
               </div>
               <div 
@@ -121,15 +170,25 @@ const PitchSection = () => {
                     isControlsVisible ? 'opacity-100' : 'opacity-0'
                 )}
               >
-                <div className="w-full bg-white/20 h-1 rounded-full cursor-pointer mb-2" onClick={handleProgressClick}>
-                    <div className="bg-primary h-full rounded-full" style={{ width: `${progress}%` }}></div>
+                <div 
+                  ref={progressBarRef}
+                  className="w-full bg-white/20 h-1.5 rounded-full cursor-pointer mb-2 group/progress"
+                  onMouseDown={handleProgressMouseDown}
+                  onClick={handleProgressClick}
+                >
+                    <div 
+                      className="bg-primary h-full rounded-full relative" 
+                      style={{ width: `${progress}%` }}
+                    >
+                      <div className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-1/2 w-3 h-3 rounded-full bg-primary opacity-0 group-hover/progress:opacity-100 transition-opacity" />
+                    </div>
                 </div>
                 <div className="flex items-center justify-between text-white">
                     <div className="flex items-center gap-4">
-                        <button onClick={togglePlayPause}>
+                        <button onClick={togglePlayPause} className="focus:outline-none">
                             {isPlaying ? <Pause className="w-6 h-6" /> : <Play className="w-6 h-6" />}
                         </button>
-                        <button onClick={toggleMute}>
+                        <button onClick={toggleMute} className="focus:outline-none">
                             {isMuted ? <VolumeX className="w-6 h-6" /> : <Volume2 className="w-6 h-6" />}
                         </button>
                     </div>
