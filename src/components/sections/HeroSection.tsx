@@ -1,6 +1,7 @@
 'use client';
 import { motion } from 'framer-motion';
 import ScrollIndicator from '@/components/shared/ScrollIndicator';
+import { useEffect, useRef } from 'react';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -20,10 +21,19 @@ const itemVariants = {
 };
 
 const HeroSection = () => {
+  const videoRef = useRef<HTMLVideoElement>(null);
+
+  useEffect(() => {
+    if (videoRef.current) {
+      videoRef.current.playbackRate = 0.75;
+    }
+  }, []);
+
   return (
     <section className="relative flex h-screen min-h-[700px] w-full flex-col items-center justify-center overflow-hidden p-6">
       <div className="absolute top-0 left-0 w-full h-full z-[-2]">
         <video
+          ref={videoRef}
           src="/hero-background.mp4"
           autoPlay
           muted
